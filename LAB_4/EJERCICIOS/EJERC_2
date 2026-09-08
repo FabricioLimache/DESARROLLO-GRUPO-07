@@ -1,1 +1,45 @@
+const estudiantes = [ 
 
+  { nombre: "Andrea", nota: 17 }, 
+
+  { nombre: "Carlos", nota: 11 }, 
+
+  { nombre: "Lucía", nota: 19 }, 
+
+  { nombre: "Mateo", nota: 8 }, 
+
+  { nombre: "Valeria", nota: 14 } 
+
+]; 
+
+const nombresEstudiantes = estudiantes.map(e => e.nombre); 
+
+const aprobados = estudiantes.filter(e => e.nota >= 13); 
+
+const estudianteLucia = estudiantes.find(e => e.nombre === "Lucía"); 
+
+const sumaNotas = estudiantes.reduce((acumulador, e) => acumulador + e.nota, 0); 
+
+const promedioGeneral = sumaNotas / estudiantes.length; 
+
+const cantidadDesaprobados = estudiantes.filter(e => e.nota < 13).length; 
+
+const estudiantesConEstado = estudiantes.map(e => ({ 
+
+  ...e, 
+
+  estado: e.nota >= 13 ? "Aprobado" : "Desaprobado" 
+
+})); 
+
+console.log("1. Nombres de los estudiantes:", nombresEstudiantes); 
+
+console.log("2. Estudiantes aprobados (nota >= 13):", aprobados); 
+
+console.log("3. Búsqueda de Lucía:", estudianteLucia); 
+
+console.log("4. Promedio general de notas:", promedioGeneral); 
+
+console.log("5. Cantidad de estudiantes desaprobados:", cantidadDesaprobados); 
+
+console.log("7. Array final con estado agregado:", estudiantesConEstado);
