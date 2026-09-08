@@ -1,1 +1,97 @@
+function calcularEnvio(peso, tipo = "normal") { 
 
+  const pesoNum = Number(peso); 
+
+  if (Number.isNaN(pesoNum) || pesoNum <= 0) { 
+
+    throw new Error("El peso ingresado debe ser un número mayor que cero."); 
+
+  } 
+
+  
+
+  let costoBase = 0; 
+
+  if (pesoNum <= 2) { 
+
+    costoBase = 8; 
+
+  } else if (pesoNum <= 5) { 
+
+    costoBase = 12; 
+
+  } else { 
+
+    costoBase = 18; 
+
+  } 
+
+  
+
+  const costoFinal = tipo === "express" ? costoBase * 1.4 : costoBase; 
+
+  return { 
+
+    peso: pesoNum, 
+
+    tipo: tipo, 
+
+    costoBase: costoBase, 
+
+    costoFinal: costoFinal 
+
+  }; 
+
+} 
+
+  
+
+// PRUEBAS DE LA FUNCIÓN 
+
+  
+
+// Prueba 1: Envío normal menor de 2 kg 
+
+try { 
+
+  const envio1 = calcularEnvio(1.5, "normal"); 
+
+  console.log("Envío 1 (Normal < 2kg):", envio1); 
+
+} catch (error) { 
+
+  console.error("Error en Envío 1:", error.message); 
+
+} 
+
+  
+
+// Prueba 2: Envío express (ej. 4 kg) 
+
+try { 
+
+  const envio2 = calcularEnvio(4, "express"); 
+
+  console.log("Envío 2 (Express 4kg):", envio2); 
+
+} catch (error) { 
+
+  console.error("Error en Envío 2:", error.message); 
+
+} 
+
+  
+
+// Prueba 3: Peso inválido (genera excepción) 
+
+try { 
+
+  const envio3 = calcularEnvio(-2, "normal"); 
+
+  console.log("Envío 3:", envio3); 
+
+} catch (error) { 
+
+  console.error("Error en Envío 3 (Capturado correctamente):", error.message); 
+
+} 
