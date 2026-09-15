@@ -1,1 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Panel Administrativo UCSM</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f3f7f4;
+        }
+
+        .navbar {
+            background-color: #006633;
+        }
+
+        .sidebar {
+            background-color: #004d26;
+            min-height: 100vh;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: #006633;
+        }
+
+        .titulo {
+            color: #006633;
+        }
+
+        .card {
+            border-top: 4px solid #006633;
+        }
+
+        .btn-verde {
+            background-color: #006633;
+            color: white;
+        }
+
+        .btn-verde:hover {
+            background-color: #004d26;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+
+            <!-- Botón para celular -->
+            <button class="btn btn-light d-md-none"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#menu">
+                ☰
+            </button>
+
+            <span class="navbar-brand ms-2">
+                UCSM - Panel Administrativo
+            </span>
+
+        </div>
+    </nav>
+
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- SIDEBAR PARA COMPUTADORA -->
+            <aside class="col-md-2 sidebar d-none d-md-block">
+
+                <h5 class="text-white mt-4">Menú</h5>
+
+                <a href="#">Inicio</a>
+                <a href="#">Usuarios</a>
+                <a href="#">Registros</a>
+                <a href="#">Reportes</a>
+
+            </aside>
+
+
+            <!-- SIDEBAR PARA CELULAR -->
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="menu">
+
+                <div class="offcanvas-header">
+                    <h5>Menú UCSM</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="offcanvas">
+                    </button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <a href="#" class="d-block mb-3">Inicio</a>
+                    <a href="#" class="d-block mb-3">Usuarios</a>
+                    <a href="#" class="d-block mb-3">Registros</a>
+                    <a href="#" class="d-block">Reportes</a>
+                </div>
+
+            </div>
+
+
+            <!-- CONTENIDO PRINCIPAL -->
+            <main class="col-12 col-md-10 p-4">
+
+                <h2 class="titulo">Panel de Control</h2>
+                <p>Universidad Católica de Santa María</p>
+
+
+                <!-- CARDS / KPIs -->
+                <div class="row">
+
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Usuarios Activos</h5>
+                                <h3>120</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Alertas</h5>
+                                <h3>8</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Servidores</h5>
+                                <h3>6</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Registros</h5>
+                                <h3>85</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- TABLA -->
+                <h3 class="titulo mt-4">Últimos registros</h3>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead class="table-success">
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Actividad</th>
+                                <th>Prioridad</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Juan Pérez</td>
+                                <td>Inicio de sesión</td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        Normal
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>María López</td>
+                                <td>Intento de acceso</td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        Advertencia
+                                    </span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Pedro Ramos</td>
+                                <td>Error del sistema</td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        Crítico
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- BOTÓN -->
+                <button class="btn btn-verde"
+                        data-bs-toggle="modal"
+                        data-bs-target="#registro">
+                    Nuevo Registro
+                </button>
+
+
+                <!-- MODAL -->
+                <div class="modal fade" id="registro">
+
+                    <div class="modal-dialog">
+
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    Nuevo Registro
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal">
+                                </button>
+                            </div>
+
+
+                            <div class="modal-body">
+
+                                <form>
+
+                                    <label class="form-label">
+                                        Nombre
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control mb-3">
+
+
+                                    <label class="form-label">
+                                        Actividad
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control mb-3">
+
+
+                                    <label class="form-label">
+                                        Prioridad
+                                    </label>
+
+                                    <select class="form-select mb-3">
+
+                                        <option>Normal</option>
+                                        <option>Advertencia</option>
+                                        <option>Crítico</option>
+
+                                    </select>
+
+
+                                    <button type="submit"
+                                            class="btn btn-verde">
+                                        Guardar
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
