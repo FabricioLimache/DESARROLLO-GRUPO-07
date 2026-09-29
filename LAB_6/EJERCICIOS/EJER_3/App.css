@@ -1,0 +1,107 @@
+/* Estilos para Restaurante RAMOS */
+body {
+  background-color: #f4f6f8;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.contenedor-principal {
+  max-width: 750px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.encabezado {
+  text-align: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 15px;
+}
+
+.encabezado h1 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.encabezado h2 {
+  margin: 5px 0 0 0;
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.lista-mesas {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.tarjeta-mesa {
+  border: 1px solid #e2e8f0;
+  border-left: 6px solid #3b82f6; /* Línea lateral bonita */
+  border-radius: 8px;
+  padding: 18px;
+  background-color: #f8fafc;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta-mesa:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tarjeta-mesa h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.tarjeta-mesa p {
+  margin: 6px 0;
+  color: #334155;
+}
+
+/* Colores para el texto del estado */
+.tarjeta-mesa p strong {
+  color: #1e293b;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.acciones button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Botón Cambiar Estado */
+.acciones button:first-child {
+  background-color: #2563eb;
+  color: white;
+}
+
+.acciones button:first-child:hover {
+  background-color: #1d4ed8;
+}
+
+/* Botón Eliminar */
+.acciones button:last-child {
+  background-color: #ef4444;
+  color: white;
+}
+
+.acciones button:last-child:hover {
+  background-color: #dc2626;
+}
