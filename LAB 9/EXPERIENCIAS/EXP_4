@@ -1,1 +1,284 @@
 
+import reflex as rx
+import httpx
+
+# ==========================================
+# EXPERIENCIA 3: ESTADO Y FORMULARIO DE CONTACTO
+# ==========================================
+class EstadoContacto(rx.State):
+    mensaje_respuesta: str = ""
+    es_exito: bool = False
+
+    @rx.event
+    def enviar(self, datos: dict):
+        nombre = datos.get("nombre", "").strip()
+        correo = datos.get("correo", "").strip()
+        mensaje = datos.get("mensaje", "").strip()
+
+        if not nombre or not correo or not mensaje:
+            self.mensaje_respuesta = "Error: Todos los campos son obligatorios."
+            self.es_exito = False
+            return
+
+        if "@" not in correo or "." not in correo:
+            self.mensaje_respuesta = "Error: Ingrese un correo electrónico válido."
+            self.es_exito = False
+            return
+
+        if len(mensaje) < 10:
+            self.mensaje_respuesta = "Error: El mensaje debe contener al menos 10 caracteres."
+            self.es_exito = False
+            return
+
+        self.mensaje_respuesta = f"¡Gracias {nombre}! Tu mensaje ha sido enviado con éxito."
+        self.es_exito = True
+
+def formulario_contacto():
+    return rx.vstack(
+        rx.heading("Formulario de Contacto (Exp. 3)", size="6", color="#1E293B"),
+        rx.text("Ingrese sus datos para ponerse en contacto con nosotros.", color="#64748B"),
+        
+        rx.form(
+            rx.vstack(
+                rx.vstack(
+                    rx.text("Nombre Completo:", font_weight="bold", color="#0F1010"),
+                    rx.input(
+                        name="nombre",
+                        placeholder="Ej. Juan Pérez",
+                        color="#020202",
+                        required=True,
+                        width="100%",
+                    ),
+                    align_items="start",
+                    width="100%",
+                ),
+                rx.vstack(
+                    rx.text("Correo Electrónico:", font_weight="bold", color="#212223"),
+                    rx.input(
+                        name="correo",
+                        type="email",
+                        placeholder="ejemplo@correo.com",
+                        color="#020202",
+                        required=True,
+                        width="100%",
+                    ),
+                    align_items="start",
+                    width="100%",
+                ),
+                rx.vstack(
+                    rx.text("Mensaje:", font_weight="bold", color="#0A0A0B"),
+                    rx.text_area(
+                        name="mensaje",
+                        placeholder="Escriba su mensaje aquí (mínimo 10 caracteres)...",
+                        color="#141414",
+                        required=True,
+                        width="100%",
+                    ),
+                    align_items="start",
+                    width="100%",
+                ),
+                rx.button(
+                    "Enviar Mensaje",
+                    type="submit",
+                    background_color="#181919",
+                    color="white",
+                    width="100%",
+                    cursor="pointer",
+                ),
+                spacing="4",
+            ),
+            on_submit=EstadoContacto.enviar,
+            reset_on_submit=True,
+            width="100%",
+        ),
+        
+        rx.cond(
+            EstadoContacto.mensaje_respuesta != "",
+            rx.box(
+                rx.text(
+                    EstadoContacto.mensaje_respuesta,
+                    color=rx.cond(EstadoContacto.es_exito, "#15803D", "#B91C1C"),
+                    font_weight="medium",
+                ),
+                background_color=rx.cond(EstadoContacto.es_exito, "#DCFCE7", "#FEE2E2"),
+                padding="12px",
+                border_radius="8px",
+                border=rx.cond(EstadoContacto.es_exito, "1px solid #86EFAC", "1px solid #FCA5A5"),
+                width="100%",
+                margin_top="10px",
+            ),
+        ),
+        
+        padding="24px",
+        border="1px solid #E2E8F0",
+        border_radius="12px",
+        background_color="#EDEBEB",
+        max_width="600px",
+        width="100%",
+        spacing="4",
+    )
+
+
+# ==========================================
+# EXPERIENCIA 4: ESTADO Y CONSUMO DE API
+# ==========================================
+class EstadoUsuarios(rx.State):
+    usuarios: list[dict[str, str]] = []
+    cargando: bool = False
+    error: str = ""
+
+    @rx.event
+    async def cargar_usuarios(self):
+        self.cargando = True
+        self.error = ""
+        self.usuarios = []
+
+        try:
+            async with httpx.AsyncClient() as cliente:
+                respuesta = await cliente.get(
+                    "https://jsonplaceholder.typicode.com/users",
+                    timeout=5.0
+                )
+                respuesta.raise_for_status()
+                datos = respuesta.json()
+
+                usuarios_procesados = []
+                for item in datos:
+                    usuarios_procesados.append({
+                        "name": item.get("name", ""),
+                        "username": item.get("username", ""),
+                        "email": item.get("email", ""),
+                        "company": item.get("company", {}).get("name", "N/A"),
+                    })
+
+                self.usuarios = usuarios_procesados
+
+        except httpx.HTTPError as e:
+            self.error = f"Error de conexión con la API: {str(e)}"
+        except Exception as e:
+            self.error = f"Ocurrió un error inesperado: {str(e)}"
+        finally:
+            self.cargando = False
+
+def tarjeta_usuario(usuario: dict[str, str]):
+    return rx.box(
+        rx.vstack(
+            rx.hstack(
+                rx.text("👤", font_size="20px"),
+                rx.vstack(
+                    rx.heading(usuario["name"], size="4", color="#0F172A"),
+                    rx.text(f"@{usuario['username']}", color="#64748B", font_size="14px"),
+                    align_items="start",
+                    spacing="0",
+                ),
+                align_items="center",
+                spacing="3",
+            ),
+            rx.divider(),
+            rx.vstack(
+                rx.hstack(
+                    rx.text("📧", font_size="14px"),
+                    rx.text(usuario["email"], color="#334155", font_size="14px"),
+                    spacing="2",
+                ),
+                rx.hstack(
+                    rx.text("🏢", font_size="14px"),
+                    rx.text(usuario["company"], color="#334155", font_size="14px", font_weight="medium"),
+                    spacing="2",
+                ),
+                align_items="start",
+                spacing="1",
+                width="100%",
+            ),
+            align_items="start",
+            spacing="3",
+        ),
+        padding="16px",
+        border="1px solid #E2E8F0",
+        border_radius="10px",
+        background_color="#09090A",
+        box_shadow="0 1px 3px rgba(0,0,0,0.1)",
+        width="100%",
+    )
+
+def directorio_usuarios():
+    return rx.vstack(
+        rx.hstack(
+            rx.heading("Directorio de Usuarios API", size="6", color="#1E293B"),
+            rx.button(
+                "Cargar Usuarios",
+                on_click=EstadoUsuarios.cargar_usuarios,
+                loading=EstadoUsuarios.cargando,
+                background_color="#040505",
+                color="white",
+                cursor="pointer",
+            ),
+            justify="between",
+            align_items="center",
+            width="100%",
+        ),
+        
+        rx.cond(
+            EstadoUsuarios.cargando,
+            rx.hstack(
+                rx.text("⏳ Consultando información en la API externa...", color="#0D9488", font_weight="medium"),
+                padding="15px",
+            ),
+        ),
+        
+        rx.cond(
+            EstadoUsuarios.error != "",
+            rx.box(
+                rx.text(EstadoUsuarios.error, color="#B91C1C", font_weight="bold"),
+                padding="12px",
+                background_color="#FEE2E2",
+                border_radius="8px",
+                width="100%",
+            ),
+        ),
+        
+        rx.cond(
+            EstadoUsuarios.usuarios.length() > 0,
+            rx.vstack(
+                rx.foreach(
+                    EstadoUsuarios.usuarios,
+                    tarjeta_usuario
+                ),
+                width="100%",
+                spacing="3",
+            ),
+        ),
+        
+        padding="24px",
+        border="1px solid #E2E8F0",
+        border_radius="12px",
+        background_color="#FFFFFF",
+        max_width="600px",
+        width="100%",
+        spacing="4",
+    )
+
+
+# ==========================================
+# PÁGINA PRINCIPAL
+# ==========================================
+def index():
+    return rx.center(
+        rx.vstack(
+            rx.heading("Exp 4 - felix limache", size="8", color="#0F172A"),
+            rx.divider(),
+            
+            formulario_contacto(),
+            directorio_usuarios(),
+            
+            spacing="6",
+            padding="40px",
+            max_width="800px",
+            width="100%",
+        ),
+        background_color="#F1F5F9",
+        min_height="100vh",
+    )
+
+app = rx.App()
+app.add_page(index)
