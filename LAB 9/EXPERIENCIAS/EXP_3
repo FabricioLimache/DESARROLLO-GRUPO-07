@@ -1,1 +1,141 @@
+import reflex as rx
 
+class EstadoContacto(rx.State):
+    # Variable de estado para mostrar mensajes de confirmación o error
+    mensaje_respuesta: str = ""
+    # Variable opcional para saber si el mensaje fue exitoso (para dar formato)
+    es_exito: bool = False
+
+    @rx.event
+    def enviar(self, datos: dict[str, str]):
+        # Capturamos los datos enviando desde el formulario mediante sus atributos 'name'
+        nombre = datos.get("nombre", "").strip()
+        correo = datos.get("correo", "").strip()
+        mensaje = datos.get("mensaje", "").strip()
+
+        # Validación 1: Campos vacíos
+        if not nombre or not correo or not mensaje:
+            self.mensaje_respuesta = "Error: Todos los campos son obligatorios."
+            self.es_exito = False
+            return
+
+        # Validación 2: Formato de correo electrónico (presencia de '@' y '.')
+        if "@" not in correo or "." not in correo:
+            self.mensaje_respuesta = "Error: Ingrese un correo electrónico válido."
+            self.es_exito = False
+            return
+
+        # Validación 3: Extensión mínima del mensaje (mínimo 10 caracteres)
+        if len(mensaje) < 10:
+            self.mensaje_respuesta = "Error: El mensaje debe contener al menos 10 caracteres."
+            self.es_exito = False
+            return
+
+        # Si supera todas las validaciones (Mensaje de confirmación personalizado con el nombre)
+        self.mensaje_respuesta = f"¡Gracias {nombre}! Tu mensaje ha sido enviado con éxito."
+        self.es_exito = True
+
+    @rx.event
+    def limpiar_mensaje(self):
+        self.mensaje_respuesta = ""
+        self.es_exito = False
+def formulario_contacto():
+    return rx.vstack(
+        rx.heading("Formulario de Contacto", size="6", color="#1E293B"),
+        rx.text("Ingrese sus datos para ponerse en contacto con nosotros.", color="#64748B"),
+        
+        rx.form(
+            rx.vstack(
+                rx.vstack(
+                    rx.text("Nombre Completo:", font_weight="bold", color="#0F1010"),
+                    rx.input(
+                        name="nombre",
+                        placeholder="Ej. Juan Pérez",
+                        color="#020202",
+                        required=True,
+                        width="100%",
+                    ),
+                    align_items="start",
+                    width="100%",
+                ),
+                rx.vstack(
+                    rx.text("Correo Electrónico:", font_weight="bold", color="#212223"),
+                    rx.input(
+                        name="correo",
+                        type="email",
+                        placeholder="ejemplo@correo.com",
+                        color="#020202",
+                        required=True,
+                        width="100%",
+                        
+                    ),
+                    align_items="start",
+                    width="100%",
+                ),
+                rx.vstack(
+                    rx.text("Mensaje:", font_weight="bold", color="#0A0A0B"),
+                    rx.text_area(
+                        name="mensaje",
+                        placeholder="Escriba su mensaje aquí (mínimo 10 caracteres)...",
+                        color="#020202",
+                        required=True,
+                        width="100%",
+                    ),
+                    align_items="start",
+                    width="100%",
+                ),
+                rx.button(
+                    "Enviar Mensaje",
+                    type="submit",
+                    background_color="#0F0F10",
+                    color="white",
+                    width="100%",
+                    cursor="pointer",
+                ),
+                spacing="4",
+            ),
+            on_submit=EstadoContacto.enviar,
+            reset_on_submit=True,  # Limpia los campos tras presionar Submit
+            width="100%",
+        ),
+        
+        # Renderizado condicional para mostrar la respuesta
+        rx.cond(
+            EstadoContacto.mensaje_respuesta != "",
+            rx.box(
+                rx.text(
+                    EstadoContacto.mensaje_respuesta,
+                    color=rx.cond(EstadoContacto.es_exito, "#15803D", "#B91C1C"),
+                    font_weight="medium",
+                ),
+                background_color=rx.cond(EstadoContacto.es_exito, "#DCFCE7", "#FEE2E2"),
+                padding="12px",
+                border_radius="8px",
+                border=rx.cond(EstadoContacto.es_exito, "1px solid #86EFAC", "1px solid #FCA5A5"),
+                width="100%",
+                margin_top="10px",
+            ),
+        ),
+        
+        padding="24px",
+        border="1px solid #E2E8F0",
+        border_radius="12px",
+        background_color="#FFFFFF",
+        max_width="500px",
+        width="100%",
+        spacing="4",
+    )
+# ... (todo tu código de EstadoContacto y formulario_contacto anterior) ...
+
+# 1. Define la función index que llama a tu formulario
+def index():
+    return rx.center(
+        formulario_contacto(),
+        background_color="#080C10",
+        min_height="100vh",
+        padding="40px",
+    )
+
+# 2. Inicializa la app y agrega la página index
+app = rx.App()
+app.add_page(index)
